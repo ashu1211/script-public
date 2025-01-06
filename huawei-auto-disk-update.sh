@@ -17,7 +17,7 @@ echo "Region: $REGION"
 attachments=$(hcloud ECS ListServerVolumeAttachments --cli-region=$REGION --project_id=$PROJECTID --server_id=$INSTANCEID | jq -r '.volumeAttachments[] | "\(.device): \(.id)"')
 
 # Loop through df output and check usage
-echo "Checking volumes consuming more than 30%:"
+echo "Checking volumes consuming more than 90%:"
 echo "$df_output" | awk 'NR>1' | while read -r line; do
   device=$(echo "$line" | awk '{print $1}')
   fstype=$(echo "$line" | awk '{print $2}')
@@ -36,8 +36,8 @@ echo "$df_output" | awk 'NR>1' | while read -r line; do
     continue
   fi
 
-  # Process only if FSUSE% > 30
-  if [[ $use_percent -gt 30 ]]; then
+  # Process only if FSUSE% > 90
+  if [[ $use_percent -gt 90 ]]; then
     volume_id=$(echo "$attachments" | grep -oP "$base_device: \K[^\s]+")
     if [[ -n $volume_id ]]; then
       current_size=$size  # Size is already in GB

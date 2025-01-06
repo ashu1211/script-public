@@ -33,7 +33,7 @@ echo '----------------------------------------------Done with hcloud -----------
 # echo "FOR AWS_CLOUD"
 # curl -o /home/$USER/auto-disk-update.sh https://raw.githubusercontent.com/ashu1211/script/main/auto-disk-update.sh
 echo "FOR HUAWEI_CLOUD"
-curl -o /home/$USER/auto-disk-update.sh https://raw.githubusercontent.com/ashu1211/script/main/huawei-auto-disk-update.sh
+curl -o /home/$USER/huawei-auto-disk-update.sh https://raw.githubusercontent.com/ashu1211/script/main/huawei-auto-disk-update.sh
 # Give execute permissions to the script
 mv huawei-auto-disk-update.sh auto-disk-update.sh
 chmod +x /home/$USER/auto-disk-update.sh

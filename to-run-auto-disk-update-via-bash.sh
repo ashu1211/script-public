@@ -38,7 +38,7 @@ mv huawei-auto-disk-update.sh auto-disk-update.sh
 chmod +x /$USER/auto-disk-update.sh
 
 # Create a cron job to run the script every day at 11 AM
-(crontab -l 2>/dev/null; echo "0 11 * * * /home/$USER/auto-disk-update.sh") | crontab -
+(crontab -l 2>/dev/null; echo "0 11 * * * /$USER/auto-disk-update.sh") | crontab -
 
 # Source ~/.bashrc to load any new environment variables or settings
 source ~/.bashrc

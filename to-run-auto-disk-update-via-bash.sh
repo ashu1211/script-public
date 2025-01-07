@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Update and install necessary packages
-sudo apt-get update -y
-sudo apt-get install -y curl unzip
+sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y curl unzip
 
 # # Install AWS CLI
 # curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -16,9 +16,9 @@ sudo apt-get install -y curl unzip
 echo "for huawei-cloud"
 
 echo "----------------------------------------------install initial package----------------------------------------------"
-sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-sudo apt-get install -y logrotate
-sudo apt-get install jq -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y logrotate
+sudo DEBIAN_FRONTEND=noninteractive apt-get install jq -y
 
 
 

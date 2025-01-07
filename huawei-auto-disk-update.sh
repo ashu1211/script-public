@@ -1,5 +1,5 @@
 #!/bin/bash
-
+sudo apt-get install jq -y
 # Get filesystem usage details
 df_output=$(df -Th)
 

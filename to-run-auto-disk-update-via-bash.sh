@@ -18,6 +18,7 @@ echo "for huawei-cloud"
 echo "----------------------------------------------install initial package----------------------------------------------"
 sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 sudo apt-get install -y logrotate
+sudo apt-get install jq -y
 
 
 

@@ -19,6 +19,7 @@ echo "----------------------------------------------install initial package-----
 sudo DEBIAN_FRONTEND=noninteractive apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y logrotate
 sudo DEBIAN_FRONTEND=noninteractive apt-get install jq -y
+sudo DEBIAN_FRONTEND=noninteractive apt install postfix -y
 
 
 

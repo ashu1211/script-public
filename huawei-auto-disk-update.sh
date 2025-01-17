@@ -1,24 +1,31 @@
 #!/bin/bash
 
-# Get filesystem usage details
-df_output=$(df -Th)
+# Variables
+METADATA_URL="http://169.254.169.254/openstack/latest/meta_data.json"
+DF_CMD="df -Th"
+JQ_CMD="jq -r"
+HCL_CMD="hcloud"
+RESIZE_PERCENT=15
+SLEEP_DURATION=10
+DISK_USAGE_THRESHOLD=90  # Percentage threshold for disk usage
 
 # Fetch instance metadata
-PROJECTID=$(curl -s http://169.254.169.254/openstack/latest/meta_data.json | jq -r '.project_id')
+PROJECTID=$(curl -s "$METADATA_URL" | $JQ_CMD '.project_id')
+INSTANCEID=$(curl -s "$METADATA_URL" | $JQ_CMD '.uuid')
+REGION=$(curl -s "$METADATA_URL" | $JQ_CMD '.region_id')
+
+# Commands
+DF_OUTPUT=$($DF_CMD)
+ATTACHMENTS=$($HCL_CMD ECS ListServerVolumeAttachments --cli-region=$REGION --project_id=$PROJECTID --server_id=$INSTANCEID | $JQ_CMD '.volumeAttachments[] | "\(.device): \(.id)"')
+
+# Outputs for debugging
 echo "Project ID: $PROJECTID"
-
-INSTANCEID=$(curl -s http://169.254.169.254/openstack/latest/meta_data.json | jq -r '.uuid')
 echo "Instance ID: $INSTANCEID"
-
-REGION=$(curl -s http://169.254.169.254/openstack/latest/meta_data.json | jq -r '.region_id')
 echo "Region: $REGION"
 
-# Get volume attachments
-attachments=$(hcloud ECS ListServerVolumeAttachments --cli-region=$REGION --project_id=$PROJECTID --server_id=$INSTANCEID | jq -r '.volumeAttachments[] | "\(.device): \(.id)"')
-
 # Loop through df output and check usage
-echo "Checking volumes consuming more than 90%:"
-echo "$df_output" | awk 'NR>1' | while read -r line; do
+echo "Checking volumes consuming more than $DISK_USAGE_THRESHOLD%:"
+echo "$DF_OUTPUT" | awk 'NR>1' | while read -r line; do
   device=$(echo "$line" | awk '{print $1}')
   fstype=$(echo "$line" | awk '{print $2}')
   size=$(echo "$line" | awk '{print $3}' | tr -d 'G')
@@ -36,22 +43,22 @@ echo "$df_output" | awk 'NR>1' | while read -r line; do
     continue
   fi
 
-  # Process only if FSUSE% > 90
-  if [[ $use_percent -gt 90 ]]; then
-    volume_id=$(echo "$attachments" | grep -oP "$base_device: \K[^\s]+")
+  # Process only if FSUSE% > DISK_USAGE_THRESHOLD
+  if [[ $use_percent -gt $DISK_USAGE_THRESHOLD ]]; then
+    volume_id=$(echo "$ATTACHMENTS" | grep -oP "$base_device: \K[^\s]+")
     if [[ -n $volume_id ]]; then
       current_size=$size  # Size is already in GB
-      new_size=$((current_size + (current_size * 15 / 100)))  # Increase by 15%
+      new_size=$((current_size + (current_size * $RESIZE_PERCENT / 100)))  # Increase by RESIZE_PERCENT%
 
       echo "Volume: $device, Volume ID: $volume_id"
       echo "Used: $use_percent%, Current Size: $current_size GB, New Size: $new_size GB"
 
       # Resize the volume
       echo "Resizing volume $volume_id to $new_size GB..."
-      hcloud EVS ResizeVolume --cli-region=$REGION --os-extend.new_size=$new_size --project_id=$PROJECTID --volume_id=$volume_id
+      $HCL_CMD EVS ResizeVolume --cli-region=$REGION --os-extend.new_size=$new_size --project_id=$PROJECTID --volume_id=$volume_id
 
       # Wait for the resize operation to complete (optional: implement a loop to poll for status)
-      sleep 10  # Adjust as needed
+      sleep $SLEEP_DURATION  # Adjust as needed
 
       # Grow the partition and filesystem
       if [[ "$fstype" == "xfs" ]]; then

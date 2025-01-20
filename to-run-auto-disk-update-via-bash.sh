@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# Update and install necessary packages
-sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y curl unzip
-
 # # Install AWS CLI
 # curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 # unzip awscliv2.zip
@@ -11,8 +7,6 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y curl unzip
 # source ~/.bashrc
 # # Verify the installation
 # aws --version
-
-
 echo "for huawei-cloud"
 
 echo "----------------------------------------------install initial package----------------------------------------------"
@@ -20,6 +14,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get update -y && sudo DEBIAN_FRONTEND=no
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y logrotate
 sudo DEBIAN_FRONTEND=noninteractive apt-get install jq -y
 sudo DEBIAN_FRONTEND=noninteractive apt install postfix -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y curl unzip
 
 
 

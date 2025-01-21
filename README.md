@@ -3,4 +3,4 @@ bash <(curl -fsSL https://raw.githubusercontent.com/ashu1211/script-public/refs/
 
 bash <(curl -fsSL https://raw.githubusercontent.com/ashu1211/script-public/refs/heads/main/node-exporter/exporter.sh)
 
-bash <(curl -fsSL https://github.com/ashu1211/script-public/refs/heads/main/auto-mount.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/ashu1211/script-public/refs/heads/main/auto-mount.sh)

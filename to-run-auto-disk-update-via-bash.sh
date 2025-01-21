@@ -11,10 +11,10 @@ echo "for huawei-cloud"
 
 echo "----------------------------------------------install initial package----------------------------------------------"
 sudo DEBIAN_FRONTEND=noninteractive apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y logrotate
+sudo DEBIAN_FRONTEND=noninteractive apt-get install  logrotate -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install jq -y
 sudo DEBIAN_FRONTEND=noninteractive apt install postfix -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y curl unzip
+sudo DEBIAN_FRONTEND=noninteractive apt-get install curl unzip -y 
 
 
 
@@ -36,9 +36,26 @@ rm -rf auto-disk-update.sh
 mv huawei-auto-disk-update.sh auto-disk-update.sh
 chmod +x /$USER/auto-disk-update.sh
 ./auto-disk-update.sh
-# crontab -r
-# Create a cron job to run the script every day at 11 AM
-# (crontab -l 2>/dev/null; echo "*/10 * * * /$USER/auto-disk-update.sh") | crontab -
+
+
+SCRIPT_PATH="/$USER/auto-disk-update.sh"
+
+# Check if auto-disk-update.sh is in the crontab
+if crontab -l 2>/dev/null | grep -q "$SCRIPT_PATH"; then
+  echo "Found $SCRIPT_PATH in crontab. Deleting..."
+  
+  # Remove the specific line from crontab
+  crontab -l | grep -v "$SCRIPT_PATH" | crontab -
+  
+  echo "Entry removed successfully."
+else
+  echo "$SCRIPT_PATH not found in crontab. Adding..."
+  
+  # Add a new entry to run the script every 10 minutes
+  (crontab -l 2>/dev/null; echo "*/10 * * * * $SCRIPT_PATH") | crontab -
+  
+  echo "Entry added successfully."
+fi
 
 # Source ~/.bashrc to load any new environment variables or settings
 source ~/.bashrc

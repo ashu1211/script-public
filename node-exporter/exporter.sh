@@ -10,6 +10,7 @@ tar -xvf node_exporter-1.7.0.linux-amd64.tar.gz
 mv node_exporter-1.7.0.linux-amd64 node_exporter-files
 sudo cp node_exporter-files/node_exporter /usr/bin/
 sudo chown node_exporter:node_exporter /usr/bin/node_exporter
+rm -rf node_exporter*
 
 
 sudo su -c "echo '[Unit]

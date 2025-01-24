@@ -1,4 +1,4 @@
-#!/BIN/BASH
+#!/bin/bash
 echo "for huawei-cloud"
 
 echo "----------------------------------------------install initial package----------------------------------------------"

@@ -35,7 +35,7 @@ cd /data/heimdall-snapshot
 wget https://snapshots.stakepool.dev.br/heimdall/heimdall-mainnet.txt && aria2c -j 22 -x 16 -s 32 --disk-cache=1024M --file-allocation=falloc --timeout=30 --retry-wait=5 --console-log-level=warn --auto-file-renaming=false --summary-interval=3600 -c -i heimdall-mainnet.txt
 
 # Step 2
-curl -L https://raw.githubusercontent.com/maticnetwork/install/main/heimdall.sh | bash -s -- v1.0.7 mainnet sentry
+curl -L https://raw.githubusercontent.com/maticnetwork/install/main/heimdall.sh | bash -s -- v1.0.10 mainnet sentry
 sleep 10
 
 sudo sed -i 's/User=heimdall/User=root/g' /lib/systemd/system/heimdalld.service
@@ -54,7 +54,7 @@ echo "heimdall service complete"
 cd /data/bor-snapshot
 wget https://snapshots.stakepool.dev.br/bor-mainnet.txt &&  aria2c -j 22 -x 16 -s 32 --disk-cache=1024M --file-allocation=falloc --timeout=30 --retry-wait=5 --console-log-level=warn --auto-file-renaming=false --summary-interval=3600 -c -i bor-mainnet.txt
 
-curl -L https://raw.githubusercontent.com/maticnetwork/install/main/bor.sh | bash -s -- v1.5.3 mainnet sentry
+curl -L https://raw.githubusercontent.com/maticnetwork/install/main/bor.sh | bash -s -- v1.5.4 mainnet sentry
 sudo systemctl daemon-reload
 
 sudo sed -i 's/User=bor/User=root/g' /lib/systemd/system/bor.service

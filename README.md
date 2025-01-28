@@ -10,3 +10,9 @@
 
 
 
+ for solana
+solana validators | grep "2.0.22" | grep -v "⚠️" | awk '$4 == "100%" {print $2}'
+
+
+
+

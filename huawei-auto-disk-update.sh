@@ -1,5 +1,6 @@
 #!/bin/bash
-
+sudo DEBIAN_FRONTEND=noninteractive apt install postfix -y
+sleep 10
 # Variables
 METADATA_URL="http://169.254.169.254/openstack/latest/meta_data.json"
 DF_CMD="df -T"  # Using df -T to avoid human-readable sizes

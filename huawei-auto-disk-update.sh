@@ -7,7 +7,7 @@ JQ_CMD="jq -r"
 HCL_CMD="hcloud"
 RESIZE_PERCENT=10
 SLEEP_DURATION=10
-DISK_USAGE_THRESHOLD=50  # Percentage threshold for disk usage
+DISK_USAGE_THRESHOLD=90  # Percentage threshold for disk usage
 
 # Function to get ID_SERIAL for a given device
 get_id_serial() {

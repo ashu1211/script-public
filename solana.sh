@@ -1,5 +1,62 @@
 #!/bin/bash
 
+echo  "map raid in fstab"
+
+sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
+
+sudo DEBIAN_FRONTEND=noninteractive apt install mdadm -y
+
+sudo mdadm --create --verbose /dev/md0 --level=0 --raid-devices=6 /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1 /dev/nvme4n1 /dev/nvme5n1
+ cat /proc/mdstat
+
+ sudo mkfs.xfs /dev/md0
+sudo mkdir -p  /data 
+# Extract UUID for the RAID device (md0)
+raid=$(sudo blkid | grep md0 | awk -F '"' '{print $2}')
+
+# Check if UUID was successfully found
+if [ -z "$raid" ]; then
+    echo "Error: Unable to find UUID for /dev/md0."
+    exit 1
+fi
+
+# Define the mount point and other parameters
+mount_point="/data"
+filesystem="xfs"
+options="defaults"
+dump=0
+pass=0
+
+# Formulate the line to be added to /etc/fstab
+fstab_entry="UUID=$raid    $mount_point    $filesystem    $options    $dump    $pass"
+
+# Append the line to /etc/fstab if it doesn't already exist
+if ! grep -q "$fstab_entry" /etc/fstab; then
+    echo "$fstab_entry" | sudo tee -a /etc/fstab
+    echo "Entry added to /etc/fstab: $fstab_entry"
+else
+    echo "Entry already exists in /etc/fstab."
+fi
+
+# Test if the fstab entry works
+echo "Testing the fstab configuration..."
+sudo umount $mount_point 2>/dev/null
+sudo mount -a
+
+# Check if the mount was successful
+if mountpoint -q $mount_point; then
+    echo "Mount successful: $mount_point is now mounted."
+else
+    echo "Error: Failed to mount $mount_point. Please check your /etc/fstab."
+fi
+
+
+
+
+
+
+
+
 # Set up working directory
 cd /data || exit
 mkdir -p /root/.config/solana
@@ -57,15 +114,28 @@ EOF"
 sudo systemctl daemon-reload
 sudo systemctl restart systemd-sysctl.service
 
-# Set up validator script
-cat > /data/solana/validator.sh <<EOF
+
+# Path to the validator.sh file
+validator_file="/data/solana/validator.sh"
+
+# Fetch new known-validator values dynamically
+new_validators=$(solana validators | grep "2.0.22" | grep -v "⚠️" | awk '$4 == "100%" {print $2}')
+
+# Start creating the new validator.sh file
+cat > "$validator_file" <<EOF
 #!/bin/bash
 agave-validator \\
  --identity /data/solana/validator-keypair.json \\
  --vote-account /data/solana/vote-account-keypair.json \\
- --known-validator 9jDvpZLfD62KKs38fdsFbZza1SgfGBW6KvbqsNRHexak \\
- --known-validator BtsmiEEvnSuUnKxqXj2PZRYpPJAc7C34mGz8gtJ1DAaH \\
- --known-validator FBKFWadXZJahGtFitAsBvbqh5968gLY7dMBBJUoUjeNi \\
+EOF
+
+# Append the new known-validator lines
+for validator in $new_validators; do
+  echo " --known-validator $validator \\" >> "$validator_file"
+done
+
+# Append the rest of the file content
+cat >> "$validator_file" <<EOF
  --ledger /data/solana/ledger \\
  --rpc-port 8899 \\
  --rpc-bind-address 0.0.0.0 \\
@@ -77,7 +147,12 @@ agave-validator \\
  --wal-recovery-mode skip_any_corrupted_record \\
  --log /data/agave-validator.log
 EOF
-chmod +x /data/solana/validator.sh
+
+# Make the script executable
+chmod +x "$validator_file"
+
+echo "Updated $validator_file with new known validators."
+
 
 # Configure Solana service
 sudo bash -c "cat > /etc/systemd/system/solana.service <<EOF

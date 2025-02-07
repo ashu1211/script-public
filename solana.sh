@@ -2,6 +2,9 @@
 
 # Set up working directory
 cd /data || exit
+mv /root/.config/solana /data
+ln -s /data/solana /root/.config
+cd ~
 
 # Download and extract Solana release
 wget https://github.com/anza-xyz/agave/releases/download/v2.0.22/solana-release-x86_64-unknown-linux-gnu.tar.bz2
@@ -19,8 +22,8 @@ rustup update
 
 # Configure Solana
 sudo apt-get update -y
-mkdir -p /data/solana-data
-cd /data/solana-data || exit
+mkdir -p /data/solana
+cd /data/solana || exit
 solana config set --url https://api.mainnet-beta.solana.com
 solana-keygen new --no-passphrase -o validator-keypair.json
 solana-keygen new --no-passphrase -o vote-account-keypair.json
@@ -54,15 +57,15 @@ sudo systemctl daemon-reload
 sudo systemctl restart systemd-sysctl.service
 
 # Set up validator script
-cat > /data/solana-data/validator.sh <<EOF
+cat > /data/solana/validator.sh <<EOF
 #!/bin/bash
 agave-validator \\
- --identity /data/solana-data/validator-keypair.json \\
- --vote-account /data/solana-data/vote-account-keypair.json \\
+ --identity /data/solana/validator-keypair.json \\
+ --vote-account /data/solana/vote-account-keypair.json \\
  --known-validator 9jDvpZLfD62KKs38fdsFbZza1SgfGBW6KvbqsNRHexak \\
  --known-validator BtsmiEEvnSuUnKxqXj2PZRYpPJAc7C34mGz8gtJ1DAaH \\
  --known-validator FBKFWadXZJahGtFitAsBvbqh5968gLY7dMBBJUoUjeNi \\
- --ledger /data/solana-data/ledger \\
+ --ledger /data/solana/ledger \\
  --rpc-port 8899 \\
  --rpc-bind-address 0.0.0.0 \\
  --full-rpc-api \\
@@ -73,7 +76,7 @@ agave-validator \\
  --wal-recovery-mode skip_any_corrupted_record \\
  --log /data/agave-validator.log
 EOF
-chmod +x /data/solana-data/validator.sh
+chmod +x /data/solana/validator.sh
 
 # Configure Solana service
 sudo bash -c "cat > /etc/systemd/system/solana.service <<EOF
@@ -91,7 +94,7 @@ Group=root
 LimitNOFILE=1000000
 LogRateLimitIntervalSec=0
 Environment=\"PATH=/root/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin\"
-ExecStart=/data/solana-data/validator.sh
+ExecStart=/data/solana/validator.sh
 
 [Install]
 WantedBy=multi-user.target

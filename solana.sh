@@ -2,6 +2,7 @@
 
 # Set up working directory
 cd /data || exit
+mkdir -p /root/.config/solana
 mv /root/.config/solana /data
 ln -s /data/solana /root/.config
 cd ~

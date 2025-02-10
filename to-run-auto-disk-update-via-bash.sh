@@ -37,20 +37,20 @@ SCRIPT_PATH="$HOME/auto-disk-update.sh"
 # Check if auto-disk-update.sh is in the crontab
 if crontab -l 2>/dev/null | grep -q "$SCRIPT_PATH"; then
   # Check if the existing crontab entry is exactly set to run every 10 minutes
-  if crontab -l 2>/dev/null | grep -q "*/10 \* \* \* \* $SCRIPT_PATH"; then
-    echo "Crontab entry for $SCRIPT_PATH is already set to run every 10 minutes. No changes needed."
+  if crontab -l 2>/dev/null | grep -q "*/15 \* \* \* \* $SCRIPT_PATH"; then
+    echo "Crontab entry for $SCRIPT_PATH is already set to run every 15 minutes. No changes needed."
   else
-    echo "Crontab entry for $SCRIPT_PATH exists but is not set to run every 10 minutes. Updating..."
+    echo "Crontab entry for $SCRIPT_PATH exists but is not set to run every 15 minutes. Updating..."
     # Remove the incorrect entry
     crontab -l | grep -v "$SCRIPT_PATH" | crontab -
     # Add the correct entry
-    (crontab -l 2>/dev/null; echo "*/10 * * * * $SCRIPT_PATH") | crontab -
+    (crontab -l 2>/dev/null; echo "*/15 * * * * $SCRIPT_PATH") | crontab -
     echo "Crontab entry updated successfully."
   fi
 else
   echo "No crontab entry for $SCRIPT_PATH found. Adding..."
   # Add a new entry to run the script every 10 minutes
-  (crontab -l 2>/dev/null; echo "*/10 * * * * $SCRIPT_PATH") | crontab -
+  (crontab -l 2>/dev/null; echo "*/15 * * * * $SCRIPT_PATH") | crontab -
   echo "Crontab entry added successfully."
 fi
 

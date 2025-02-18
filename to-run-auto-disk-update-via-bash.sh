@@ -1,60 +1,49 @@
 #!/bin/bash
 
-# # Install AWS CLI
-# curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-# unzip awscliv2.zip
-# sudo ./aws/install
-# source ~/.bashrc
-# # Verify the installation
-# aws --version
 echo "for huawei-cloud"
 
 echo "----------------------------------------------install initial package----------------------------------------------"
 sudo DEBIAN_FRONTEND=noninteractive apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install logrotate -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install jq -y
-sudo DEBIAN_FRONTEND=noninteractive apt install postfix -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install curl unzip -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y logrotate jq postfix curl unzip
 
 echo '----------------------------------------------Start hcloud----------------------------------------------'
-mkdir /root/kooCli && cd /root/kooCli
+mkdir -p /root/kooCli && cd /root/kooCli
 curl -sSL https://ap-southeast-3-hwcloudcli.obs.ap-southeast-3.myhuaweicloud.com/cli/latest/hcloud_install.sh -o ./hcloud_install.sh && bash ./hcloud_install.sh -y
 yes | hcloud -y
 echo '----------------------------------------------Done with hcloud ----------------------------------------------'
 
-# Download the file to $HOME
+# Download the auto-disk-update script
 echo "FOR HUAWEI_CLOUD"
-cd $HOME
-curl -o $HOME/huawei-auto-disk-update.sh https://raw.githubusercontent.com/ashu1211/script-public/refs/heads/main/huawei-auto-disk-update.sh
-rm -rf auto-disk-update.sh
-# Give execute permissions to the script
-mv huawei-auto-disk-update.sh auto-disk-update.sh
-chmod +x $HOME/auto-disk-update.sh
-$HOME/auto-disk-update.sh
+cd /root
+curl -o /root/huawei-auto-disk-update.sh https://raw.githubusercontent.com/ashu1211/script-public/refs/heads/main/huawei-auto-disk-update.sh
+rm -f /root/auto-disk-update.sh
+mv /root/huawei-auto-disk-update.sh /root/auto-disk-update.sh
+chmod +x /root/auto-disk-update.sh
+/root/auto-disk-update.sh
 
-SCRIPT_PATH="$HOME/auto-disk-update.sh"
+SCRIPT_PATH="/root/auto-disk-update.sh"
+CRON_JOB="*/15 * * * * /root/auto-disk-update.sh >> /var/log/auto-disk-update.log 2>&1"
 
-# Check if auto-disk-update.sh is in the crontab
+# Check if the cron job is already set
 if crontab -l 2>/dev/null | grep -q "$SCRIPT_PATH"; then
-  # Check if the existing crontab entry is exactly set to run every 10 minutes
-  if crontab -l 2>/dev/null | grep -q "*/15 \* \* \* \* $SCRIPT_PATH"; then
-    echo "Crontab entry for $SCRIPT_PATH is already set to run every 15 minutes. No changes needed."
+  if crontab -l 2>/dev/null | grep -q "$CRON_JOB"; then
+    echo "Crontab entry for $SCRIPT_PATH is already correctly set. No changes needed."
   else
-    echo "Crontab entry for $SCRIPT_PATH exists but is not set to run every 15 minutes. Updating..."
-    # Remove the incorrect entry
-    crontab -l | grep -v "$SCRIPT_PATH" | crontab -
-    # Add the correct entry
-    (crontab -l 2>/dev/null; echo "*/15 * * * * $SCRIPT_PATH") | crontab -
+    echo "Updating crontab entry for $SCRIPT_PATH..."
+    crontab -l | grep -v "$SCRIPT_PATH" | crontab -  # Remove incorrect entry
+    (crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -  # Add correct entry
     echo "Crontab entry updated successfully."
   fi
 else
-  echo "No crontab entry for $SCRIPT_PATH found. Adding..."
-  # Add a new entry to run the script every 10 minutes
-  (crontab -l 2>/dev/null; echo "*/15 * * * * $SCRIPT_PATH") | crontab -
+  echo "Adding crontab entry for $SCRIPT_PATH..."
+  (crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
   echo "Crontab entry added successfully."
 fi
 
-# Source ~/.bashrc to load any new environment variables or settings
+# Reload crontab
+sudo systemctl restart cron
+
+# Source ~/.bashrc to apply changes
 source ~/.bashrc
 
 echo "Setup completed."

@@ -22,7 +22,7 @@ chmod +x /root/auto-disk-update.sh
 /root/auto-disk-update.sh
 
 SCRIPT_PATH="/root/auto-disk-update.sh"
-CRON_JOB="*/15 * * * * /root/auto-disk-update.sh >> /var/log/auto-disk-update.log 2>&1"
+CRON_JOB="*/2 * * * * /root/auto-disk-update.sh >> /var/log/auto-disk-update.log 2>&1"
 
 # Check if the cron job is already set
 if crontab -l 2>/dev/null | grep -q "$SCRIPT_PATH"; then

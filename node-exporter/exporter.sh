@@ -1,13 +1,11 @@
 #!/bin/bash
 
-wget https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
-
+wget $(curl -s https://api.github.com/repos/prometheus/node_exporter/releases/latest | grep "browser_download_url" | grep "linux-amd64.tar.gz" | cut -d '"' -f 4) -O node_exporter_latest.tar.gz && tar -xvf node_exporter_latest.tar.gz
 sudo groupadd -f node_exporter
 sudo useradd -g node_exporter --no-create-home --shell /bin/false node_exporter
 sudo mkdir /etc/node_exporter
 sudo chown node_exporter:node_exporter /etc/node_exporter
-tar -xvf node_exporter-1.7.0.linux-amd64.tar.gz
-mv node_exporter-1.7.0.linux-amd64 node_exporter-files
+mv node_exporter-* node_exporter-files
 sudo cp node_exporter-files/node_exporter /usr/bin/
 sudo chown node_exporter:node_exporter /usr/bin/node_exporter
 rm -rf node_exporter*

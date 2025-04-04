@@ -19,7 +19,7 @@ curl -o /root/huawei-auto-disk-update.sh https://raw.githubusercontent.com/ashu1
 rm -f /root/auto-disk-update.sh
 mv /root/huawei-auto-disk-update.sh /root/auto-disk-update.sh
 chmod +x /root/auto-disk-update.sh
-/root/auto-disk-update.sh
+# /root/auto-disk-update.sh
 
 SCRIPT_PATH="/root/auto-disk-update.sh"
 CRON_JOB="*/2 * * * * /root/auto-disk-update.sh >> /var/log/auto-disk-update.log 2>&1"

@@ -5,7 +5,8 @@ echo "for huawei-cloud"
 echo "----------------------------------------------install initial package----------------------------------------------"
 sudo DEBIAN_FRONTEND=noninteractive apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y logrotate jq postfix curl unzip
-sudo DEBIAN_FRONTEND=noninteractive apt  install docker.io -y 
+sudo DEBIAN_FRONTEND=noninteractive apt  install docker.io -y
+sudo DEBIAN_FRONTEND=noninteractive apt  install docker-compose -y
 
 echo '----------------------------------------------Start hcloud----------------------------------------------'
 mkdir -p /root/kooCli && cd /root/kooCli

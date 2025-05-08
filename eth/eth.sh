@@ -2,18 +2,18 @@
 
 # Script to install Ethereum Mainnet with Geth and Prysm on Ubuntu
 
-# Step 0: Run auto-mount script only if it hasn't run before
-MARKER_FILE="/var/local/auto-mount-installed"
+# # Step 0: Run auto-mount script only if it hasn't run before
+# MARKER_FILE="/var/local/auto-mount-installed"
 
-if [ ! -f "$MARKER_FILE" ]; then
-    echo "Running auto-mount script for the first time..."
-    curl -fsSL https://raw.githubusercontent.com/ashu1211/script-public/refs/heads/main/auto-mount.sh | bash
+# if [ ! -f "$MARKER_FILE" ]; then
+#     echo "Running auto-mount script for the first time..."
+#     curl -fsSL https://raw.githubusercontent.com/ashu1211/script-public/refs/heads/main/auto-mount.sh | bash
 
-    sudo mkdir -p "$(dirname "$MARKER_FILE")"
-    sudo touch "$MARKER_FILE"
-else
-    echo "Auto-mount script has already been run. Skipping."
-fi
+#     sudo mkdir -p "$(dirname "$MARKER_FILE")"
+#     sudo touch "$MARKER_FILE"
+# else
+#     echo "Auto-mount script has already been run. Skipping."
+# fi
 
 # Step 0b: Run Huawei disk update script if not already run
 DISK_UPDATE_MARKER="/var/local/huawei-disk-update-installed"

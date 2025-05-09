@@ -8,10 +8,12 @@ echo "Stopping tron.service..."
 sudo systemctl stop tron.service
 
 echo "Backing up existing FullNode.jar..."
-mv FullNode.jar FullNode.jar.bak
-
-
-
+if [[ -f FullNode.jar ]]; then
+  TIMESTAMP=$(date '+%Y-%m-%d_%H-%M-%S')
+  BACKUP_NAME="FullNode.jar.$TIMESTAMP"
+  echo "Backing up existing FullNode.jar to $BACKUP_NAME..."
+  mv FullNode.jar "$BACKUP_NAME"
+fi
 
 
 echo "Fetching latest FullNode.jar release URL..."
@@ -36,3 +38,4 @@ echo "now the version is "
 java -jar /data/FullNode.jar --version
 
 echo "Update complete."
+

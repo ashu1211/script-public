@@ -32,4 +32,6 @@ curl -L -o FullNode.jar "$LATEST_URL"
 echo "Starting tron.service..."
 sudo systemctl start tron.service
 
+echo "now the version is " java -jar /data/FUllNode.jar --version
+
 echo "Update complete."

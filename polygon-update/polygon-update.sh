@@ -16,14 +16,14 @@ bor_version=$(get_latest_release "$bor_repo")
 
 echo "Latest Heimdall version: $heimdall_version"
 echo "Latest Bor version: $bor_version"
-systemctl stop heimdall.service
+systemctl stop heimdalld.service
 systemctl stop bor.service
 
 curl -L https://raw.githubusercontent.com/maticnetwork/install/main/heimdall.sh | bash -s -- $heimdall_version mainnet sentry
 
 curl -L https://raw.githubusercontent.com/maticnetwork/install/main/bor.sh | bash -s -- $bor_version mainnet sentry
 
-systemctl start heimdall.service
+systemctl start heimdalld.service
 
 while true; do
 catching_up=$(curl -s localhost:26657/status | jq -r '.result.sync_info.catching_up')

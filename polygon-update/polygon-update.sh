@@ -16,7 +16,8 @@ bor_version=$(get_latest_release "$bor_repo")
 
 echo "Latest Heimdall version: $heimdall_version"
 echo "Latest Bor version: $bor_version"
-
+systemctl stop heimdall.service
+systemctl stop bor.service
 
 curl -L https://raw.githubusercontent.com/maticnetwork/install/main/heimdall.sh | bash -s -- $heimdall_version mainnet sentry
 

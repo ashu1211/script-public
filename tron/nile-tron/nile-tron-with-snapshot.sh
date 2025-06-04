@@ -28,7 +28,6 @@ echo "Current Date: $current_date"
 wget --continue "https://nile-snapshots.s3-accelerate.amazonaws.com/backup$current_date/FullNode_output-directory.tgz"
 
 # Unzip the downloaded file
-log "Unzipping FullNode_output-directory.tgz..."
 tar -xavf FullNode_output-directory.tgz -C /data
 
 sleep 5

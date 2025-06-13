@@ -11,7 +11,7 @@
 
 # bash <(curl -fsSL https://raw.githubusercontent.com/ashu1211/script-public/refs/heads/main/tron/tron-version-update.sh)
 
-
+# bash <(curl -fsSL https://raw.githubusercontent.com/ashu1211/script-public/refs/heads/main/docker.sh)
 
  for solana
 solana validators | grep "2.0.22" | grep -v "⚠️" | awk '$4 == "100%" {print $2}'

@@ -6,9 +6,9 @@ METADATA_URL="http://169.254.169.254/openstack/latest/meta_data.json"
 DF_CMD="df -T"  # Using df -T to avoid human-readable sizes
 JQ_CMD="jq -r"
 HCL_CMD="hcloud"
-RESIZE_PERCENT=10
+RESIZE_PERCENT=5
 SLEEP_DURATION=10
-DISK_USAGE_THRESHOLD=88  # Percentage threshold for disk usage
+DISK_USAGE_THRESHOLD=95  # Percentage threshold for disk usage
 
 # Function to get ID_SERIAL for a given device
 get_id_serial() {

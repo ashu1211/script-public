@@ -1,5 +1,11 @@
 #!/bin/bash
-sudo DEBIAN_FRONTEND=noninteractive apt install postfix -y
+if ! dpkg -s postfix >/dev/null 2>&1; then
+    echo "Postfix not found, installing..."
+    sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y postfix
+else
+    echo "Postfix is already installed."
+fi
 sleep 10
 
 # Variables

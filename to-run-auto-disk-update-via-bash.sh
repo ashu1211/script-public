@@ -1,12 +1,30 @@
 #!/bin/bash
 
 echo "for huawei-cloud"
-
 echo "----------------------------------------------install initial package----------------------------------------------"
-sudo DEBIAN_FRONTEND=noninteractive apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y logrotate jq postfix curl unzip
-sudo DEBIAN_FRONTEND=noninteractive apt  install docker.io -y
-sudo DEBIAN_FRONTEND=noninteractive apt  install docker-compose -y
+
+# Function to install package if not already installed
+install_if_missing() {
+  PKG=$1
+  CMD=$2
+
+  if ! command -v "$CMD" >/dev/null 2>&1; then
+    echo "$PKG not found, installing..."
+    sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y "$PKG"
+  else
+    echo "$PKG already installed, skipping..."
+  fi
+}
+
+# Check and install required packages
+install_if_missing "logrotate" "logrotate"
+install_if_missing "jq" "jq"
+install_if_missing "postfix" "postfix"
+install_if_missing "curl" "curl"
+install_if_missing "unzip" "unzip"
+install_if_missing "docker.io" "docker"
+install_if_missing "docker-compose" "docker-compose"
 
 echo '----------------------------------------------Start hcloud----------------------------------------------'
 mkdir -p /root/kooCli && cd /root/kooCli
@@ -21,7 +39,6 @@ curl -o /root/huawei-auto-disk-update.sh https://raw.githubusercontent.com/ashu1
 rm -f /root/auto-disk-update.sh
 mv /root/huawei-auto-disk-update.sh /root/auto-disk-update.sh
 chmod +x /root/auto-disk-update.sh
-# /root/auto-disk-update.sh
 
 SCRIPT_PATH="/root/auto-disk-update.sh"
 CRON_JOB="*/2 * * * * /root/auto-disk-update.sh >> /var/log/auto-disk-update.log 2>&1"

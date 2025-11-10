@@ -45,4 +45,25 @@ sudo chmod +x /usr/local/bin/docker-compose
 echo "Docker version: $(docker --version)"
 echo "Docker Compose version: $(docker-compose --version)"
 
+DOCKER_CONFIG="/etc/docker/daemon.json"
+
+# Create directory if not exist
+sudo mkdir -p /etc/docker
+
+# Write configuration to daemon.json
+sudo bash -c 'cat > /etc/docker/daemon.json <<EOF
+{
+  "data-root": "/data/docker"
+}
+EOF'
+
+# Restart Docker to apply changes
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
+# Verify
+echo "✅ Docker daemon.json updated:"
+cat /etc/docker/daemon.json
+
+
 echo "✅ Docker and Docker Compose installation completed."

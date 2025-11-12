@@ -40,30 +40,36 @@ DOCKER_COMPOSE_VERSION="2.24.6"  # Replace with latest if needed
 sudo curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" \
   -o /usr/local/bin/docker-compose
 
+# Ensure docker-compose is executable
 sudo chmod +x /usr/local/bin/docker-compose
 
+# Display versions
 echo "Docker version: $(docker --version)"
 echo "Docker Compose version: $(docker-compose --version)"
 
+# Define Docker config path
 DOCKER_CONFIG="/etc/docker/daemon.json"
 
-# Create directory if not exist
+# Create directory if it doesn't exist
 sudo mkdir -p /etc/docker
 
 # Write configuration to daemon.json
-sudo bash -c 'cat > /etc/docker/daemon.json <<EOF
+sudo bash -c "cat > $DOCKER_CONFIG <<EOF
 {
-  "data-root": "/data/docker"
+  \"data-root\": \"/data/docker\"
 }
-EOF'
+EOF"
 
-# Restart Docker to apply changes
+# Apply and restart Docker service
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 
 # Verify
 echo "✅ Docker daemon.json updated:"
-cat /etc/docker/daemon.json
-systemctl start docker
+cat "$DOCKER_CONFIG"
+
+# Ensure Docker is running
+sudo systemctl start docker
+sudo systemctl status docker --no-pager
 
 echo "✅ Docker and Docker Compose installation completed."

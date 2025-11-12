@@ -64,6 +64,6 @@ sudo systemctl restart docker
 # Verify
 echo "✅ Docker daemon.json updated:"
 cat /etc/docker/daemon.json
-
+systemctl start docker
 
 echo "✅ Docker and Docker Compose installation completed."

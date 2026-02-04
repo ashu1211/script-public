@@ -1,5 +1,11 @@
 #!/bin/bash
 
+cat <<'EOF' > /etc/motd
+
+	Welcome to Instanodes NaaS Service
+
+EOF
+
 echo "for huawei-cloud"
 echo "----------------------------------------------install initial package----------------------------------------------"
 

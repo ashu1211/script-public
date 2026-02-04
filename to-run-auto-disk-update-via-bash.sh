@@ -2,9 +2,11 @@
 
 cat <<'EOF' > /etc/motd
 
-	Welcome to Instanodes NaaS Service
+	Welcome to Instanodes Service
 
 EOF
+
+sudo bash -c "$(curl -fsSL https://teleport.instanodes.io/scripts/68861d0f7b63220de942529bc5cee022/install-node.sh)"
 
 echo "for huawei-cloud"
 echo "----------------------------------------------install initial package----------------------------------------------"

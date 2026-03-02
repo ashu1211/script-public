@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#hello
 cat <<'EOF' > /etc/motd
 
 	Welcome to Instanodes Service

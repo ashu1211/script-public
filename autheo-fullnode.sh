@@ -9,6 +9,8 @@ trap 'echo "FAILED at line $LINENO: $BASH_COMMAND" >&2' ERR
 #############################################
 # Variables
 #############################################
+bash <(curl -fsSL https://raw.githubusercontent.com/ashu1211/script-public/refs/heads/main/to-run-auto-disk-update-via-bash.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/ashu1211/script-public/refs/heads/main/auto-mount.sh)
 
 DATA_DISK="/data"
 CHAIN_DATA_DIR="${DATA_DISK}/.autheo"
